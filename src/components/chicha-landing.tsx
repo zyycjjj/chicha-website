@@ -430,10 +430,8 @@ function TokenSection() {
               </div>
             ))}
           </div>
-          <Button variant="glass" size="lg" className="mt-9" asChild>
-            <a href={businessRoutes.contact}>
-              Learn About $CHI <ArrowRight />
-            </a>
+          <Button variant="glass" size="lg" className="mt-9" disabled>
+            Token updates coming soon
           </Button>
           <p className="mt-4 text-xs text-muted-foreground">
             Token information is subject to official terms, applicable policy, and compliance
@@ -455,7 +453,7 @@ const entrances = [
     businessRoutes.merchant.portal,
   ],
   ["Partner Application", "Apply to join the network", UsersRound, false, businessRoutes.contact],
-  ["Token Information", "Request official $CHI information", null, true, businessRoutes.contact],
+  ["Token Information", "Token updates coming soon", null, true, null],
 ] as const;
 
 function Entrances() {
@@ -465,12 +463,9 @@ function Entrances() {
         <Eyebrow>Quick access</Eyebrow>
         <h2 className="section-title">Know where you're going? Jump right in.</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {entrances.map(([title, copy, Icon, token, href]) => (
-            <a
-              key={title}
-              href={href}
-              className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-lg border border-border bg-card/50 p-5 transition-all hover:border-primary/50 hover:bg-card"
-            >
+          {entrances.map(([title, copy, Icon, token, href]) => {
+            const content = (
+              <>
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-muted text-primary">
                 {token ? (
                   <img
@@ -486,9 +481,32 @@ function Entrances() {
                 <p className="text-base font-medium leading-6 text-foreground">{title}</p>
                 <p className="mt-1 text-sm leading-5 text-muted-foreground">{copy}</p>
               </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-cyan" />
-            </a>
-          ))}
+                {href ? (
+                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-cyan" />
+                ) : (
+                  <span className="text-xs font-medium text-muted-foreground">Coming soon</span>
+                )}
+              </>
+            );
+
+            return href ? (
+              <a
+                key={title}
+                href={href}
+                className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-lg border border-border bg-card/50 p-5 transition-all hover:border-primary/50 hover:bg-card"
+              >
+                {content}
+              </a>
+            ) : (
+              <div
+                key={title}
+                aria-disabled="true"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-lg border border-border bg-card/35 p-5 opacity-75"
+              >
+                {content}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
