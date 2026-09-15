@@ -1,0 +1,16 @@
+[Unit]
+Description=ChiCha Website production environment
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStartPre=-/usr/bin/docker rm -f chicha-website-production
+ExecStartPre=/usr/bin/docker pull node:22-alpine
+ExecStart=/usr/bin/docker run --rm --name chicha-website-production --network none --publish 127.0.0.1:3101:3101 --volume /data/www/chicha-website-production:/app:ro --env HOST=0.0.0.0 --env PORT=3101 node:22-alpine node /app/serve.mjs
+ExecStop=/usr/bin/docker stop --time 15 chicha-website-production
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,80 @@
+name: Deploy ChiCha Website
+
+on:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+concurrency:
+  group: chicha-website-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build website
+        run: |
+          if [ "$GITHUB_REF_NAME" = "develop" ]; then
+            pnpm run build:dev
+          else
+            pnpm run build
+          fi
+
+      - name: Select deployment environment
+        id: environment
+        run: |
+          if [ "$GITHUB_REF_NAME" = "develop" ]; then
+            echo "directory=/data/www/chicha-website-test" >> "$GITHUB_OUTPUT"
+            echo "service=chicha-website-test" >> "$GITHUB_OUTPUT"
+          else
+            echo "directory=/data/www/chicha-website-production" >> "$GITHUB_OUTPUT"
+            echo "service=chicha-website-production" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy and restart website
+        env:
+          DEPLOY_DIRECTORY: ${{ steps.environment.outputs.directory }}
+          DEPLOY_SERVICE: ${{ steps.environment.outputs.service }}
+          SSH_DEV_HOST: ${{ secrets.SSH_DEV_HOST }}
+          SSH_DEV_PRIVATE_KEY: ${{ secrets.SSH_DEV_PRIVATE_KEY }}
+          SSH_DEV_USER: ${{ secrets.SSH_DEV_USER }}
+          SSH_PRO_HOST: ${{ secrets.SSH_PRO_HOST }}
+          SSH_PRO_PRIVATE_KEY: ${{ secrets.SSH_PRO_PRIVATE_KEY }}
+          SSH_PRO_USER: ${{ secrets.SSH_PRO_USER }}
+        run: |
+          if [ "$GITHUB_REF_NAME" = "develop" ]; then
+            DEPLOY_HOST="$SSH_DEV_HOST"
+            DEPLOY_PRIVATE_KEY="$SSH_DEV_PRIVATE_KEY"
+            DEPLOY_USER="$SSH_DEV_USER"
+          else
+            DEPLOY_HOST="$SSH_PRO_HOST"
+            DEPLOY_PRIVATE_KEY="$SSH_PRO_PRIVATE_KEY"
+            DEPLOY_USER="$SSH_PRO_USER"
+          fi
+          key_file="$(mktemp)"
+          trap 'rm -f "$key_file"' EXIT
+          printf '%s' "$DEPLOY_PRIVATE_KEY" > "$key_file"
+          chmod 600 "$key_file"
+          ssh -i "$key_file" -o StrictHostKeyChecking=accept-new "$DEPLOY_USER@$DEPLOY_HOST" \
+            "sudo mkdir -p '$DEPLOY_DIRECTORY' && sudo chown '$DEPLOY_USER':'$DEPLOY_USER' '$DEPLOY_DIRECTORY'"
+          rsync -az --delete \
+            -e "ssh -i $key_file -o StrictHostKeyChecking=accept-new" \
+            dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIRECTORY/"
+          ssh -i "$key_file" -o StrictHostKeyChecking=accept-new "$DEPLOY_USER@$DEPLOY_HOST" \
+            "sudo systemctl restart '$DEPLOY_SERVICE' && sudo systemctl is-active --quiet '$DEPLOY_SERVICE'"
