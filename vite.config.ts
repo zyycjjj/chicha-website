@@ -5,6 +5,9 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  ssr: {
+    noExternal: true,
+  },
   plugins: [
     tsconfigPaths(),
     tailwindcss(),
