@@ -104,12 +104,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const appHome = businessRoutes.app.home;
+  const standaloneRedirectScript =
+    appHome === "#entrances"
+      ? undefined
+      : `(function () {
+          var standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+          var legacyStartPath = window.location.pathname === "/" || window.location.pathname === "/index.html";
+          if (standalone && legacyStartPath) {
+            window.location.replace(${JSON.stringify(appHome)} + window.location.search + window.location.hash);
+          }
+        })();`;
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
+        {standaloneRedirectScript ? (
+          <script dangerouslySetInnerHTML={{ __html: standaloneRedirectScript }} />
+        ) : null}
         {children}
         <Scripts />
       </body>
@@ -129,19 +144,6 @@ function RootComponent() {
       .catch((error: unknown) =>
         console.warn("Legacy service-worker cleanup could not be registered", error),
       );
-
-    const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-    if (
-      standalone &&
-      window.location.pathname === "/" &&
-      businessRoutes.app.home !== "#entrances"
-    ) {
-      window.location.replace(
-        businessRoutes.app.home + window.location.search + window.location.hash,
-      );
-    }
   }, []);
 
   return (
