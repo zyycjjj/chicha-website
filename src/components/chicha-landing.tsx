@@ -107,7 +107,7 @@ function Header() {
             <a href={businessRoutes.app.login}>Login</a>
           </Button>
           <Button variant="hero" asChild>
-            <a href="#roles">Get Started</a>
+            <a href={businessRoutes.app.register}>Get Started</a>
           </Button>
         </div>
         <Button
@@ -139,7 +139,7 @@ function Header() {
                 <a href={businessRoutes.app.login}>Login</a>
               </Button>
               <Button variant="hero" asChild>
-                <a href="#roles">Get Started</a>
+                <a href={businessRoutes.app.register}>Get Started</a>
               </Button>
             </div>
           </nav>
@@ -176,7 +176,7 @@ function Hero() {
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button variant="hero" size="lg" asChild>
-              <a href="#roles">
+              <a href={businessRoutes.app.register}>
                 Get Started <ArrowRight />
               </a>
             </Button>

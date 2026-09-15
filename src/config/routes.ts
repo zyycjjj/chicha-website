@@ -22,7 +22,7 @@ export const businessRoutes = {
     card: app("/card"),
   },
   merchant: {
-    portal: merchant("/?intent=qrush-lite"),
+    portal: merchant(),
   },
   contact: "mailto:team@chicha.io",
   legal: {
@@ -32,7 +32,7 @@ export const businessRoutes = {
   },
   social: {
     x: "https://x.com/ChiCha_Global",
-    telegram: "https://t.me/chichaPay_Official",
+    telegram: "https://t.me/Chicha_ai_Official",
     supportTelegram: "https://t.me/Chicha_ai_Official",
   },
   whitepaper: "https://chicha.gitbook.io/chicha-whitepaper",
