@@ -33,6 +33,13 @@ export function LegalPage({ document }: { document: LegalDocument }) {
                   ))}
                 </ul>
               )}
+              {section.afterItems && (
+                <div className="mt-4 space-y-4 text-base leading-7 text-muted-foreground">
+                  {section.afterItems.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              )}
             </section>
           ))}
         </div>
