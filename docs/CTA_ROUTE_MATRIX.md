@@ -2,15 +2,15 @@
 
 | Page/area | CTA | Current behavior after this change | Production | Test | Status |
 | --- | --- | --- | --- | --- | --- |
-| Header/mobile header | Login | scroll-context: wallet login by default, merchant login while merchants section is the current hotspot | `app.chicha.io/login` / `biz.chicha.io/login` | `payx.mobi/login` / `biz.payx.mobi/login` | complete |
-| Header | Get Started | scroll-context: wallet register by default, merchant register while merchants section is the current hotspot | `app.chicha.io/register` / `biz.chicha.io/register` | `payx.mobi/register` / `biz.payx.mobi/register` | complete |
-| Role card | Get Started as User | external registration | `app.chicha.io/register` | `payx.mobi/register` | complete |
+| Header/mobile header | Login | scroll-context: wallet login by default, merchant login while merchants section is the current hotspot | `app.chicha.io/login` / `biz.chicha.io/login` | `app.payx.mobi/login` / `biz.payx.mobi/login` | complete |
+| Header | Get Started | scroll-context: wallet register by default, merchant register while merchants section is the current hotspot | `app.chicha.io/register` / `biz.chicha.io/register` | `app.payx.mobi/register` / `biz.payx.mobi/register` | complete |
+| Role card | Get Started as User | external registration | `app.chicha.io/register` | `app.payx.mobi/register` | complete |
 | Role card | Start Accepting Payments | external merchant portal | `biz.chicha.io/?intent=qrush-lite` | `biz.payx.mobi/?intent=qrush-lite` | complete |
 | Role card / Partner feature | Become a Partner | official contact | `mailto:team@chicha.io` | same | **BLOCKED: partner portal unknown** |
-| User feature | Explore User Tools | external wallet/home | `app.chicha.io/home` | `payx.mobi/home` | complete |
+| User feature | Explore User Tools | external wallet/home | `app.chicha.io/home` | `app.payx.mobi/home` | complete |
 | Merchant feature | Explore Merchant Tools | external merchant portal | `biz.chicha.io/?intent=qrush-lite` | `biz.payx.mobi/?intent=qrush-lite` | complete |
 | Token feature / token entrance | Token information | official contact | `mailto:team@chicha.io` | same | **BLOCKED: token portal unknown** |
-| Quick access | User Login | external login | `app.chicha.io/login` | `payx.mobi/login` | complete |
+| Quick access | User Login | external login | `app.chicha.io/login` | `app.payx.mobi/login` | complete |
 | Quick access | Merchant Login | external merchant portal | `biz.chicha.io/?intent=qrush-lite` | `biz.payx.mobi/?intent=qrush-lite` | complete |
 | Footer products | UCard / Genie | user app routes | `/card`, `/home` at app host | same paths at test app | complete |
 | Footer products | QRush / Tap to Pay | merchant portal | merchant portal | test merchant portal | complete |
@@ -20,5 +20,7 @@
 | Footer company | About, news, careers | anchor or official contact | no invented content-system URL | same | pending content destinations |
 
 Section navigation (`Users`, `Merchants`, `Partners`, `Token`, `News`) is deliberately a marketing-page anchor. No `href="#"`, empty href, or JavaScript pseudo-link remains in production component markup.
+
+Host contract: production website `chicha.io` → user app `app.chicha.io`, merchant `biz.chicha.io`; test website `payx.mobi` → user app `app.payx.mobi`, merchant `biz.payx.mobi`. Website-host aliases such as `payx.mobi/login` 302-redirect to the app host, so CTAs always use the canonical host.
 
 Wallet, send/receive/swap/card/payment controls are marketing descriptions, not web-app features. Confirmed user routes include `/home`, `/login`, `/register`, and `/card`; no confirmed public Send/Receive/Swap route was found, so none was exposed from the website.

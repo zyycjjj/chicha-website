@@ -17,9 +17,9 @@
 | Build | Website host | User-app CTA | Merchant CTA |
 | --- | --- | --- | --- |
 | production | `chicha.io` | `app.chicha.io` | `biz.chicha.io` |
-| development/test | **BLOCKED: NEEDS INFRA CONFIRMATION** | `payx.mobi` | `biz.payx.mobi` |
+| development/test | `payx.mobi` | `app.payx.mobi` | `biz.payx.mobi` |
 
-The application test endpoints are confirmed by `chicha-frontend/.env`; no test website hostname was found. `ChiChaWebsite/.env.production` and `.env.development` are the single source of CTA destinations.
+The test host contract was confirmed on 2026-10-08: `payx.mobi` serves this website, `app.payx.mobi` serves `chicha-frontend` (Vue 2 / uni-app), and `biz.payx.mobi` serves the merchant service. `payx.mobi/login`, `/register`, and `/home` are legacy aliases that 302-redirect to the app host, so CTAs use the canonical `app.payx.mobi` host directly. `ChiChaWebsite/.env.production` and `.env.development` are the single source of CTA destinations.
 
 ## Responsibility boundary
 
