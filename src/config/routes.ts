@@ -23,6 +23,8 @@ export const businessRoutes = {
   },
   merchant: {
     portal: merchant(),
+    login: merchant("/login"),
+    register: merchant("/register"),
   },
   contact: "mailto:team@chicha.io",
   legal: {

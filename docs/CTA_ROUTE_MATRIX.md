@@ -2,8 +2,8 @@
 
 | Page/area | CTA | Current behavior after this change | Production | Test | Status |
 | --- | --- | --- | --- | --- | --- |
-| Header/mobile header | Login | external app link | `app.chicha.io/login` | `payx.mobi/login` | complete |
-| Header | Get Started | on-page role selector | `#roles` | `#roles` | marketing only |
+| Header/mobile header | Login | scroll-context: wallet login by default, merchant login while merchants section is the current hotspot | `app.chicha.io/login` / `biz.chicha.io/login` | `payx.mobi/login` / `biz.payx.mobi/login` | complete |
+| Header | Get Started | scroll-context: wallet register by default, merchant register while merchants section is the current hotspot | `app.chicha.io/register` / `biz.chicha.io/register` | `payx.mobi/register` / `biz.payx.mobi/register` | complete |
 | Role card | Get Started as User | external registration | `app.chicha.io/register` | `payx.mobi/register` | complete |
 | Role card | Start Accepting Payments | external merchant portal | `biz.chicha.io/?intent=qrush-lite` | `biz.payx.mobi/?intent=qrush-lite` | complete |
 | Role card / Partner feature | Become a Partner | official contact | `mailto:team@chicha.io` | same | **BLOCKED: partner portal unknown** |

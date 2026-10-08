@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
@@ -85,8 +85,54 @@ function Brand({ placement = "header" }: { placement?: "header" | "footer" }) {
   );
 }
 
+const landingSectionIds = [
+  "top",
+  "roles",
+  "users",
+  "merchants",
+  "partners",
+  "token",
+  "entrances",
+  "news",
+] as const;
+
+type LandingSectionId = (typeof landingSectionIds)[number];
+
+/** Tracks the landing section currently under the fixed header (scroll-spy). */
+function useActiveSection(): LandingSectionId {
+  const [active, setActive] = useState<LandingSectionId>("top");
+  useEffect(() => {
+    const compute = () => {
+      // Probe the point right below the fixed header (h-18 ≈ 72px) plus a small offset.
+      const probeY = 72 + Math.max(80, window.innerHeight * 0.12);
+      let current: LandingSectionId = "top";
+      for (const id of landingSectionIds) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= probeY) current = id;
+      }
+      setActive((prev) => (prev === current ? prev : current));
+    };
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
+  }, []);
+  return active;
+}
+
 function Header() {
   const [open, setOpen] = useState(false);
+  const activeSection = useActiveSection();
+  // Merchant context: while the merchants section is the current hotspot,
+  // header CTAs route to the merchant portal; otherwise they keep the wallet routes.
+  const merchantContext = activeSection === "merchants";
+  const loginHref = merchantContext ? businessRoutes.merchant.login : businessRoutes.app.login;
+  const registerHref = merchantContext
+    ? businessRoutes.merchant.register
+    : businessRoutes.app.register;
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto grid h-18 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center px-5 sm:px-8 lg:grid-cols-[auto_1fr_auto] lg:px-10">
@@ -104,10 +150,10 @@ function Header() {
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
           <Button variant="ghost" asChild>
-            <a href={businessRoutes.app.login}>Login</a>
+            <a href={loginHref}>Login</a>
           </Button>
           <Button variant="hero" asChild>
-            <a href={businessRoutes.app.register}>Get Started</a>
+            <a href={registerHref}>Get Started</a>
           </Button>
         </div>
         <Button
@@ -136,10 +182,10 @@ function Header() {
             ))}
             <div className="grid grid-cols-2 gap-3 pt-5">
               <Button variant="glass" asChild>
-                <a href={businessRoutes.app.login}>Login</a>
+                <a href={loginHref}>Login</a>
               </Button>
               <Button variant="hero" asChild>
-                <a href={businessRoutes.app.register}>Get Started</a>
+                <a href={registerHref}>Get Started</a>
               </Button>
             </div>
           </nav>
