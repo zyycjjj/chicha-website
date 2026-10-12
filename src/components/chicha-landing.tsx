@@ -18,6 +18,7 @@ import {
 import heroProductsAsset from "@/assets/chicha-hero-scene.png";
 import usersProductsAsset from "@/assets/chicha-users-scene.png";
 import merchantTapToPayAsset from "@/assets/chicha-merchant-tap-to-pay.png";
+import merchantPromoBgAsset from "@/assets/chicha-merchant-promo-bg.jpg";
 import partnerStoreAsset from "@/assets/chicha-partner-retail-2.png";
 import wordmarkAsset from "@/assets/chicha-wordmark-dark.png";
 import cMarkAsset from "@/assets/chicha-c-mark-dark.png";
@@ -27,8 +28,8 @@ import { businessRoutes } from "@/config/routes";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  ["Users", "#users"],
   ["Merchants", "#merchants"],
+  ["Users", "#users"],
   ["Partners", "#partners"],
   ["Token", "#token"],
   ["News", "#news"],
@@ -347,11 +348,52 @@ type FeatureProps = {
   copy: string;
   bullets: string[];
   cta: string;
+  ctaVariant?: "glass" | "hero";
   icon: LucideIcon;
   visual: "wallet" | "merchant" | "partner";
   reverse?: boolean;
   note?: string;
 };
+
+/** Merchant promo video, dropped in public/videos/; falls back to the static image if missing. */
+const merchantPromoVideoSrc = "/videos/merchant-promo-en.mp4";
+
+function MerchantVisual() {
+  const [videoFailed, setVideoFailed] = useState(false);
+  return (
+    <div className="visual-stage p-0">
+      {/* Blurred first-frame backdrop fills the stage; the 9:16 promo stays fully visible on top. */}
+      <img
+        src={merchantPromoBgAsset}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full scale-110 object-cover brightness-[.55] blur-2xl"
+      />
+      {videoFailed ? (
+        <img
+          src={merchantTapToPayAsset}
+          alt="ChiCha Tap to Pay stablecoin payment at a café counter"
+          className="absolute inset-0 h-full w-full object-cover object-right"
+          width={1536}
+          height={1024}
+          loading="lazy"
+        />
+      ) : (
+        <video
+          src={merchantPromoVideoSrc}
+          poster={merchantTapToPayAsset}
+          className="absolute inset-0 h-full w-full object-contain"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onError={() => setVideoFailed(true)}
+        />
+      )}
+    </div>
+  );
+}
 
 function ProductVisual({ visual }: { visual: FeatureProps["visual"] }) {
   if (visual === "wallet")
@@ -367,19 +409,7 @@ function ProductVisual({ visual }: { visual: FeatureProps["visual"] }) {
         />
       </div>
     );
-  if (visual === "merchant")
-    return (
-      <div className="visual-stage p-0">
-        <img
-          src={merchantTapToPayAsset}
-          alt="ChiCha Tap to Pay stablecoin payment at a café counter"
-          className="absolute inset-0 h-full w-full object-cover object-right"
-          width={1536}
-          height={1024}
-          loading="lazy"
-        />
-      </div>
-    );
+  if (visual === "merchant") return <MerchantVisual />;
   return (
     <div className="visual-stage p-0">
       <img
@@ -415,7 +445,7 @@ function FeatureSection(props: FeatureProps) {
               </li>
             ))}
           </ul>
-          <Button variant="glass" size="lg" className="mt-9" asChild>
+          <Button variant={props.ctaVariant ?? "glass"} size="lg" className="mt-9" asChild>
             <a
               href={
                 props.id === "users"
@@ -667,8 +697,8 @@ export function ChiChaLanding() {
         <FeatureSection
           id="merchants"
           eyebrow="For merchants"
-          title="Get paid in stablecoins. Online or in person."
-          copy="ChiCha helps merchants accept supported stablecoin payments online with QRush or offline through Tap to Pay / NFC point of sale."
+          title="Collect payments from your customers in stablecoins for only 1/10 of the cost."
+          copy="Tap to Pay is an in-store stablecoin payment solution powered by crypto technology, enabling in-store transactions at 1/10 of the cost with 0 settlement time."
           bullets={[
             "Online payments with QRush",
             "Tap to Pay / NFC point of sale",
@@ -676,6 +706,7 @@ export function ChiChaLanding() {
             "Manage payment activity",
           ]}
           cta="Explore Merchant Tools"
+          ctaVariant="hero"
           icon={Store}
           visual="merchant"
           reverse
