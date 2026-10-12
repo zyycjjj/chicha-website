@@ -18,7 +18,6 @@ import {
 import heroProductsAsset from "@/assets/chicha-hero-scene.png";
 import usersProductsAsset from "@/assets/chicha-users-scene.png";
 import merchantTapToPayAsset from "@/assets/chicha-merchant-tap-to-pay.png";
-import merchantPromoBgAsset from "@/assets/chicha-merchant-promo-bg.jpg";
 import partnerStoreAsset from "@/assets/chicha-partner-retail-2.png";
 import wordmarkAsset from "@/assets/chicha-wordmark-dark.png";
 import cMarkAsset from "@/assets/chicha-c-mark-dark.png";
@@ -361,36 +360,32 @@ const merchantPromoVideoSrc = "/videos/merchant-promo-en.mp4";
 function MerchantVisual() {
   const [videoFailed, setVideoFailed] = useState(false);
   return (
-    <div className="visual-stage p-0">
-      {/* Blurred first-frame backdrop fills the stage; the 9:16 promo stays fully visible on top. */}
-      <img
-        src={merchantPromoBgAsset}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full scale-110 object-cover brightness-[.55] blur-2xl"
-      />
-      {videoFailed ? (
-        <img
-          src={merchantTapToPayAsset}
-          alt="ChiCha Tap to Pay stablecoin payment at a café counter"
-          className="absolute inset-0 h-full w-full object-cover object-right"
-          width={1536}
-          height={1024}
-          loading="lazy"
-        />
-      ) : (
-        <video
-          src={merchantPromoVideoSrc}
-          poster={merchantTapToPayAsset}
-          className="absolute inset-0 h-full w-full object-contain"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          onError={() => setVideoFailed(true)}
-        />
-      )}
+    /* Portrait frame sized to the 9:16 promo, so the video fills it edge to edge. */
+    <div className="flex justify-center">
+      <div className="relative aspect-[9/16] h-[27rem] overflow-hidden rounded-2xl border border-border bg-card sm:h-[32rem]">
+        {videoFailed ? (
+          <img
+            src={merchantTapToPayAsset}
+            alt="ChiCha Tap to Pay stablecoin payment at a café counter"
+            className="absolute inset-0 h-full w-full object-cover"
+            width={1536}
+            height={1024}
+            loading="lazy"
+          />
+        ) : (
+          <video
+            src={merchantPromoVideoSrc}
+            poster={merchantTapToPayAsset}
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onError={() => setVideoFailed(true)}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -679,22 +674,6 @@ export function ChiChaLanding() {
         <Hero />
         <Roles />
         <FeatureSection
-          id="users"
-          eyebrow="For users"
-          title="Use stablecoins for everyday payment activity."
-          copy="ChiCha gives users a simple way to prepare, spend, pay, and manage supported stablecoin activity through ChiCha Wallet, UCard, Tap to Pay, and Genie."
-          bullets={[
-            "Keep supported stablecoins ready in your wallet",
-            "Use UCard for supported spend flows",
-            "Tap to pay with your wallet where supported",
-            "Pay supported payment requests from your wallet",
-            "Use Genie for safety and account assistance",
-          ]}
-          cta="Explore User Tools"
-          icon={WalletCards}
-          visual="wallet"
-        />
-        <FeatureSection
           id="merchants"
           eyebrow="For merchants"
           title="Collect payments from your customers in stablecoins for only 1/10 of the cost."
@@ -712,6 +691,22 @@ export function ChiChaLanding() {
           reverse
         />
         <FeatureSection
+          id="users"
+          eyebrow="For users"
+          title="Use stablecoins for everyday payment activity."
+          copy="ChiCha gives users a simple way to prepare, spend, pay, and manage supported stablecoin activity through ChiCha Wallet, UCard, Tap to Pay, and Genie."
+          bullets={[
+            "Keep supported stablecoins ready in your wallet",
+            "Use UCard for supported spend flows",
+            "Tap to pay with your wallet where supported",
+            "Pay supported payment requests from your wallet",
+            "Use Genie for safety and account assistance",
+          ]}
+          cta="Explore User Tools"
+          icon={WalletCards}
+          visual="wallet"
+        />
+        <FeatureSection
           id="partners"
           eyebrow="For partners"
           title="Bring stablecoin payments to your market."
@@ -726,6 +721,7 @@ export function ChiChaLanding() {
           icon={UsersRound}
           visual="partner"
           note="For partners, agents, and ambassadors."
+          reverse
         />
         <TokenSection />
         <Entrances />
