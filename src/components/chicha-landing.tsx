@@ -620,9 +620,6 @@ function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_2fr]">
           <div>
             <Brand placement="footer" />
-            <p className="mt-5 max-w-xs text-base leading-7 text-muted-foreground">
-              Stablecoin payments for a more open economy.
-            </p>
             <div className="mt-7 flex gap-2">
               {socialLinks.map(({ label, href, Icon }) => (
                 <a
@@ -659,7 +656,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-14 border-t border-border pt-7 text-xs text-muted-foreground">
-          © 2026 ChiCha Technology Pte. Ltd. All rights reserved.
+          © 2026 Intrinsic capital ltd. All rights reserved.
         </div>
       </div>
     </footer>
